@@ -1,20 +1,23 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
+const User = require('./models/User');
 const mongoose = require('mongoose');
 
 app.use(cors());
 app.use(express.json());
-// Store credentials separately to make them easier to manage
-const username = 'fakiya';
-const password = '01a7jOlqYW0ckIuh';
 
-mongoose.connect('mongodb+srv://${username}:${encodeURIComponent(password)}@cluster0.ccho5zb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0 ');
 
-app.post('/register', (req,res) =>{
+mongoose.connect('mongodb+srv://fakiya:CQKVmRzYMwWqGo5o@cluster0.njwfids.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0');
+
+app.post('/register', async (req,res) =>{
   const {username, password} = req.body;
-  res.json({requestData: {username, password}});
-
+  try{
+    const userDoc = await User.create({username, password});
+    res.json(userDoc);
+  } catch(e) {
+    res.status(400).json(e);
+  }
 
 });
 app.listen(4000);
